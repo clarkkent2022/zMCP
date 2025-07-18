@@ -1,0 +1,133 @@
+{
+  "2504.08999v1": {
+    "title": "MCP Bridge: A Lightweight, LLM-Agnostic RESTful Proxy for Model Context Protocol Servers",
+    "authors": [
+      "Arash Ahmadi",
+      "Sarah Sharif",
+      "Yaser M. Banad"
+    ],
+    "summary": "Large Language Models (LLMs) are increasingly augmented with external tools\nthrough standardized interfaces like the Model Context Protocol (MCP). However,\ncurrent MCP implementations face critical limitations: they typically require\nlocal process execution through STDIO transports, making them impractical for\nresource-constrained environments like mobile devices, web browsers, and edge\ncomputing. We present MCP Bridge, a lightweight RESTful proxy that connects to\nmultiple MCP servers and exposes their capabilities through a unified API.\nUnlike existing solutions, MCP Bridge is fully LLM-agnostic, supporting any\nbackend regardless of vendor. The system implements a risk-based execution\nmodel with three security levels standard execution, confirmation workflow, and\nDocker isolation while maintaining backward compatibility with standard MCP\nclients. Complementing this server-side infrastructure is a Python based MCP\nGemini Agent that facilitates natural language interaction with MCP tools. The\nevaluation demonstrates that MCP Bridge successfully addresses the constraints\nof direct MCP connections while providing enhanced security controls and\ncross-platform compatibility, enabling sophisticated LLM-powered applications\nin previously inaccessible environments",
+    "pdf_url": "http://arxiv.org/pdf/2504.08999v1",
+    "published": "2025-04-11"
+  },
+  "2504.03767v2": {
+    "title": "MCP Safety Audit: LLMs with the Model Context Protocol Allow Major Security Exploits",
+    "authors": [
+      "Brandon Radosevich",
+      "John Halloran"
+    ],
+    "summary": "To reduce development overhead and enable seamless integration between\npotential components comprising any given generative AI application, the Model\nContext Protocol (MCP) (Anthropic, 2024) has recently been released and\nsubsequently widely adopted. The MCP is an open protocol that standardizes API\ncalls to large language models (LLMs), data sources, and agentic tools. By\nconnecting multiple MCP servers, each defined with a set of tools, resources,\nand prompts, users are able to define automated workflows fully driven by LLMs.\nHowever, we show that the current MCP design carries a wide range of security\nrisks for end users. In particular, we demonstrate that industry-leading LLMs\nmay be coerced into using MCP tools to compromise an AI developer's system\nthrough various attacks, such as malicious code execution, remote access\ncontrol, and credential theft. To proactively mitigate these and related\nattacks, we introduce a safety auditing tool, MCPSafetyScanner, the first\nagentic tool to assess the security of an arbitrary MCP server. MCPScanner uses\nseveral agents to (a) automatically determine adversarial samples given an MCP\nserver's tools and resources; (b) search for related vulnerabilities and\nremediations based on those samples; and (c) generate a security report\ndetailing all findings. Our work highlights serious security issues with\ngeneral-purpose agentic workflows while also providing a proactive tool to\naudit MCP server safety and address detected vulnerabilities before deployment.\n  The described MCP server auditing tool, MCPSafetyScanner, is freely available\nat: https://github.com/johnhalloran321/mcpSafetyScanner",
+    "pdf_url": "http://arxiv.org/pdf/2504.03767v2",
+    "published": "2025-04-02"
+  },
+  "2506.13538v4": {
+    "title": "Model Context Protocol (MCP) at First Glance: Studying the Security and Maintainability of MCP Servers",
+    "authors": [
+      "Mohammed Mehedi Hasan",
+      "Hao Li",
+      "Emad Fallahzadeh",
+      "Gopi Krishnan Rajbahadur",
+      "Bram Adams",
+      "Ahmed E. Hassan"
+    ],
+    "summary": "Although Foundation Models (FMs), such as GPT-4, are increasingly used in\ndomains like finance and software engineering, reliance on textual interfaces\nlimits these models' real-world interaction. To address this, FM providers\nintroduced tool calling-triggering a proliferation of frameworks with distinct\ntool interfaces. In late 2024, Anthropic introduced the Model Context Protocol\n(MCP) to standardize this tool ecosystem, which has become the de facto\nstandard with over eight million weekly SDK downloads. Despite its adoption,\nMCP's AI-driven, non-deterministic control flow introduces new risks to\nsustainability, security, and maintainability, warranting closer examination.\n  Towards this end, we present the first large-scale empirical study of MCP\nservers. Using state-of-the-art health metrics and a hybrid analysis pipeline,\ncombining a general-purpose static analysis tool with an MCP-specific scanner,\nwe evaluate 1,899 open-source MCP servers to assess their health, security, and\nmaintainability. Despite MCP servers demonstrating strong health metrics, we\nidentify eight distinct vulnerabilities - only three overlapping with\ntraditional software vulnerabilities. Additionally, 7.2% of servers contain\ngeneral vulnerabilities and 5.5% exhibit MCP-specific tool poisoning. Regarding\nmaintainability, while 66% exhibit code smells, 14.4% contain nine bug patterns\noverlapping with traditional open-source software projects. These findings\nhighlight the need for MCP-specific vulnerability detection techniques while\nreaffirming the value of traditional analysis and refactoring practices.",
+    "pdf_url": "http://arxiv.org/pdf/2506.13538v4",
+    "published": "2025-06-16"
+  },
+  "2504.19997v1": {
+    "title": "Simplified and Secure MCP Gateways for Enterprise AI Integration",
+    "authors": [
+      "Ivo Brett"
+    ],
+    "summary": "The increased adoption of the Model Context Protocol (MCP) for AI Agents\nnecessitates robust security for Enterprise integrations. This paper introduces\nthe MCP Gateway to simplify self-hosted MCP server integration. The proposed\narchitecture integrates security principles, authentication, intrusion\ndetection, and secure tunneling, enabling secure self-hosting without exposing\ninfrastructure. Key contributions include a reference architecture, threat\nmodel mapping, simplified integration strategies, and open-source\nimplementation recommendations. This work focuses on the unique challenges of\nenterprise-centric, self-hosted AI integrations, unlike existing public MCP\nserver solutions.",
+    "pdf_url": "http://arxiv.org/pdf/2504.19997v1",
+    "published": "2025-04-28"
+  },
+  "2504.12757v2": {
+    "title": "MCP Guardian: A Security-First Layer for Safeguarding MCP-Based AI System",
+    "authors": [
+      "Sonu Kumar",
+      "Anubhav Girdhar",
+      "Ritesh Patil",
+      "Divyansh Tripathi"
+    ],
+    "summary": "As Agentic AI gain mainstream adoption, the industry invests heavily in model\ncapabilities, achieving rapid leaps in reasoning and quality. However, these\nsystems remain largely confined to data silos, and each new integration\nrequires custom logic that is difficult to scale. The Model Context Protocol\n(MCP) addresses this challenge by defining a universal, open standard for\nsecurely connecting AI-based applications (MCP clients) to data sources (MCP\nservers). However, the flexibility of the MCP introduces new risks, including\nmalicious tool servers and compromised data integrity. We present MCP Guardian,\na framework that strengthens MCP-based communication with authentication,\nrate-limiting, logging, tracing, and Web Application Firewall (WAF) scanning.\nThrough real-world scenarios and empirical testing, we demonstrate how MCP\nGuardian effectively mitigates attacks and ensures robust oversight with\nminimal overheads. Our approach fosters secure, scalable data access for AI\nassistants, underscoring the importance of a defense-in-depth approach that\nenables safer and more transparent innovation in AI-driven environments.",
+    "pdf_url": "http://arxiv.org/pdf/2504.12757v2",
+    "published": "2025-04-17"
+  },
+  "2504.11094v2": {
+    "title": "Evaluation Report on MCP Servers",
+    "authors": [
+      "Zhiling Luo",
+      "Xiaorong Shi",
+      "Xuanrui Lin",
+      "Jinyang Gao"
+    ],
+    "summary": "With the rise of LLMs, a large number of Model Context Protocol (MCP)\nservices have emerged since the end of 2024. However, the effectiveness and\nefficiency of MCP servers have not been well studied. To study these questions,\nwe propose an evaluation framework, called MCPBench. We selected several widely\nused MCP server and conducted an experimental evaluation on their accuracy,\ntime, and token usage. Our experiments showed that the most effective MCP, Bing\nWeb Search, achieved an accuracy of 64%. Importantly, we found that the\naccuracy of MCP servers can be substantially enhanced by involving declarative\ninterface. This research paves the way for further investigations into\noptimized MCP implementations, ultimately leading to better AI-driven\napplications and data retrieval solutions.",
+    "pdf_url": "http://arxiv.org/pdf/2504.11094v2",
+    "published": "2025-04-15"
+  },
+  "2505.14590v4": {
+    "title": "MCIP: Protecting MCP Safety via Model Contextual Integrity Protocol",
+    "authors": [
+      "Huihao Jing",
+      "Haoran Li",
+      "Wenbin Hu",
+      "Qi Hu",
+      "Heli Xu",
+      "Tianshu Chu",
+      "Peizhao Hu",
+      "Yangqiu Song"
+    ],
+    "summary": "As Model Context Protocol (MCP) introduces an easy-to-use ecosystem for users\nand developers, it also brings underexplored safety risks. Its decentralized\narchitecture, which separates clients and servers, poses unique challenges for\nsystematic safety analysis. This paper proposes a novel framework to enhance\nMCP safety. Guided by the MAESTRO framework, we first analyze the missing\nsafety mechanisms in MCP, and based on this analysis, we propose the Model\nContextual Integrity Protocol (MCIP), a refined version of MCP that addresses\nthese gaps. Next, we develop a fine-grained taxonomy that captures a diverse\nrange of unsafe behaviors observed in MCP scenarios. Building on this taxonomy,\nwe develop benchmark and training data that support the evaluation and\nimprovement of LLMs' capabilities in identifying safety risks within MCP\ninteractions. Leveraging the proposed benchmark and training data, we conduct\nextensive experiments on state-of-the-art LLMs. The results highlight LLMs'\nvulnerabilities in MCP interactions and demonstrate that our approach\nsubstantially improves their safety performance.",
+    "pdf_url": "http://arxiv.org/pdf/2505.14590v4",
+    "published": "2025-05-20"
+  },
+  "2505.11154v1": {
+    "title": "MPMA: Preference Manipulation Attack Against Model Context Protocol",
+    "authors": [
+      "Zihan Wang",
+      "Hongwei Li",
+      "Rui Zhang",
+      "Yu Liu",
+      "Wenbo Jiang",
+      "Wenshu Fan",
+      "Qingchuan Zhao",
+      "Guowen Xu"
+    ],
+    "summary": "Model Context Protocol (MCP) standardizes interface mapping for large\nlanguage models (LLMs) to access external data and tools, which revolutionizes\nthe paradigm of tool selection and facilitates the rapid expansion of the LLM\nagent tool ecosystem. However, as the MCP is increasingly adopted, third-party\ncustomized versions of the MCP server expose potential security\nvulnerabilities. In this paper, we first introduce a novel security threat,\nwhich we term the MCP Preference Manipulation Attack (MPMA). An attacker\ndeploys a customized MCP server to manipulate LLMs, causing them to prioritize\nit over other competing MCP servers. This can result in economic benefits for\nattackers, such as revenue from paid MCP services or advertising income\ngenerated from free servers. To achieve MPMA, we first design a Direct\nPreference Manipulation Attack ($\\mathtt{DPMA}$) that achieves significant\neffectiveness by inserting the manipulative word and phrases into the tool name\nand description. However, such a direct modification is obvious to users and\nlacks stealthiness. To address these limitations, we further propose\nGenetic-based Advertising Preference Manipulation Attack ($\\mathtt{GAPMA}$).\n$\\mathtt{GAPMA}$ employs four commonly used strategies to initialize\ndescriptions and integrates a Genetic Algorithm (GA) to enhance stealthiness.\nThe experiment results demonstrate that $\\mathtt{GAPMA}$ balances high\neffectiveness and stealthiness. Our study reveals a critical vulnerability of\nthe MCP in open ecosystems, highlighting an urgent need for robust defense\nmechanisms to ensure the fairness of the MCP ecosystem.",
+    "pdf_url": "http://arxiv.org/pdf/2505.11154v1",
+    "published": "2025-05-16"
+  },
+  "2506.02040v2": {
+    "title": "Beyond the Protocol: Unveiling Attack Vectors in the Model Context Protocol Ecosystem",
+    "authors": [
+      "Hao Song",
+      "Yiming Shen",
+      "Wenxuan Luo",
+      "Leixin Guo",
+      "Ting Chen",
+      "Jiashui Wang",
+      "Beibei Li",
+      "Xiaosong Zhang",
+      "Jiachi Chen"
+    ],
+    "summary": "The Model Context Protocol (MCP) is an emerging standard designed to enable\nseamless interaction between Large Language Model (LLM) applications and\nexternal tools or resources. Within a short period, thousands of MCP services\nhave already been developed and deployed. However, the client-server\nintegration architecture inherent in MCP may expand the attack surface against\nLLM Agent systems, introducing new vulnerabilities that allow attackers to\nexploit by designing malicious MCP servers. In this paper, we present the first\nsystematic study of attack vectors targeting the MCP ecosystem. Our analysis\nidentifies four categories of attacks, i.e., Tool Poisoning Attacks, Puppet\nAttacks, Rug Pull Attacks, and Exploitation via Malicious External Resources.\nTo evaluate the feasibility of these attacks, we conduct experiments following\nthe typical steps of launching an attack through malicious MCP servers:\nupload-download-attack. Specifically, we first construct malicious MCP servers\nand successfully upload them to three widely used MCP aggregation platforms.\nThe results indicate that current audit mechanisms are insufficient to identify\nand prevent the proposed attack methods. Next, through a user study and\ninterview with 20 participants, we demonstrate that users struggle to identify\nmalicious MCP servers and often unknowingly install them from aggregator\nplatforms. Finally, we demonstrate that these attacks can trigger harmful\nbehaviors within the user's local environment-such as accessing private files\nor controlling devices to transfer digital assets-by deploying a\nproof-of-concept (PoC) framework against five leading LLMs. Additionally, based\non interview results, we discuss four key challenges faced by the current\nsecurity ecosystem surrounding MCP servers. These findings underscore the\nurgent need for robust security mechanisms to defend against malicious MCP\nservers.",
+    "pdf_url": "http://arxiv.org/pdf/2506.02040v2",
+    "published": "2025-05-31"
+  },
+  "2507.06250v1": {
+    "title": "We Urgently Need Privilege Management in MCP: A Measurement of API Usage in MCP Ecosystems",
+    "authors": [
+      "Zhihao Li",
+      "Kun Li",
+      "Boyang Ma",
+      "Minghui Xu",
+      "Yue Zhang",
+      "Xiuzhen Cheng"
+    ],
+    "summary": "The Model Context Protocol (MCP) has emerged as a widely adopted mechanism\nfor connecting large language models to external tools and resources. While MCP\npromises seamless extensibility and rich integrations, it also introduces a\nsubstantially expanded attack surface: any plugin can inherit broad system\nprivileges with minimal isolation or oversight. In this work, we conduct the\nfirst large-scale empirical analysis of MCP security risks. We develop an\nautomated static analysis framework and systematically examine 2,562 real-world\nMCP applications spanning 23 functional categories. Our measurements reveal\nthat network and system resource APIs dominate usage patterns, affecting 1,438\nand 1,237 servers respectively, while file and memory resources are less\nfrequent but still significant. We find that Developer Tools and API\nDevelopment plugins are the most API-intensive, and that less popular plugins\noften contain disproportionately high-risk operations. Through concrete case\nstudies, we demonstrate how insufficient privilege separation enables privilege\nescalation, misinformation propagation, and data tampering. Based on these\nfindings, we propose a detailed taxonomy of MCP resource access, quantify\nsecurity-relevant API usage, and identify open challenges for building safer\nMCP ecosystems, including dynamic permission models and automated trust\nassessment.",
+    "pdf_url": "http://arxiv.org/pdf/2507.06250v1",
+    "published": "2025-07-05"
+  }
+}
