@@ -5,9 +5,12 @@ import socket
 import time
 import asyncio
 import functools
+from dotenv import load_dotenv
 from datetime import datetime
 from typing import List, Dict, Any, Callable, TypeVar, Union, Awaitable
 from mcp.server.fastmcp import FastMCP
+
+load_dotenv()
 
 # Type variable for generic function type
 F = TypeVar('F', bound=Callable[..., Any])
@@ -292,7 +295,7 @@ def print_server_info():
     port = 8000  # Default port for MCP servers
     
     print(f"\n{COLORS['GREEN']}=== Research Server ==={COLORS['ENDC']}")
-    print(f"Server will be available at: {COLORS['CYAN']}mcp://{host}:{port}{COLORS['ENDC']}")
+    print(f"Server available at: {COLORS['CYAN']}mcp://{host}:{port}{COLORS['ENDC']}")
     print(f"{COLORS['GREEN']}Available endpoints:{COLORS['ENDC']}")
     print(f"  - {COLORS['CYAN']}papers://folders{COLORS['ENDC']} - List available paper topics")
     print(f"  - {COLORS['CYAN']}papers://{{topic}}{COLORS['ENDC']} - Get papers for a specific topic")
@@ -307,6 +310,8 @@ if __name__ == "__main__":
         # Print server info to stderr so it doesn't interfere with stdio communication
         import sys
         sys.stderr.write("\nStarting Research Server...\n")
+        
+        # Print server info before starting the server
         print_server_info()
         
         # Run the MCP server in stdio mode

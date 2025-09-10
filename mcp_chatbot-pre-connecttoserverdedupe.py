@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 from anthropic import Anthropic
 from mcp import ClientSession, StdioServerParameters
@@ -15,7 +14,6 @@ load_dotenv()
 class MCP_ChatBot:
     def __init__(self):
         self.exit_stack = AsyncExitStack()
-        self.model = os.getenv('CLAUDE_MODEL', 'claude-3-7-sonnet-20250219')
         self.anthropic = Anthropic()
         # Tools list required for Anthropic API
         self.available_tools = []
@@ -24,95 +22,97 @@ class MCP_ChatBot:
         # Sessions dict maps tool/prompt names or resource URIs to MCP client sessions
         self.sessions = {}
 
-    async def _discover_server_capabilities(self, session, server_name):
-        """Discover and register server capabilities (tools, prompts, resources)."""
-        # Discover tools
+    async def connect_to_server(self, server_name, server_config):
         try:
-            if hasattr(session, 'list_tools'):
-                response = await session.list_tools()
-                if hasattr(response, 'tools'):
-                    for tool in response.tools:
-                        self.sessions[tool.name] = session
-                        self.available_tools.append({
-                            "name": tool.name,
-                            "description": getattr(tool, 'description', ''),
-                            "input_schema": getattr(tool, 'inputSchema', {})
-                        })
-                    print(f"  ✓ Found {len(response.tools)} tools")
-        except Exception as e:
-            print(f"  ⚠️ Could not list tools: {str(e)}")
-        
-        # Discover prompts
-        try:
-            if hasattr(session, 'list_prompts'):
-                prompts_response = await session.list_prompts()
-                if hasattr(prompts_response, 'prompts') and prompts_response.prompts:
-                    for prompt in prompts_response.prompts:
-                        self.sessions[prompt.name] = session
-                        self.available_prompts.append({
-                            "name": prompt.name,
-                            "description": getattr(prompt, 'description', ''),
-                            "arguments": getattr(prompt, 'arguments', {})
-                        })
-                    print(f"  ✓ Found {len(prompts_response.prompts)} prompts")
-        except Exception as e:
-            print(f"  ⚠️ Could not list prompts: {str(e)}")
+            print(f"Connecting to {server_name} server...")
+            server_params = StdioServerParameters(**server_config)
+            stdio_transport = await self.exit_stack.enter_async_context(
+                stdio_client(server_params)
+            )
+            read, write = stdio_transport
+            session = await self.exit_stack.enter_async_context(
+                ClientSession(read, write)
+            )
+            await session.initialize()
             
-        # Discover resources
-        try:
-            if hasattr(session, 'list_resources'):
-                resources_response = await session.list_resources()
-                if hasattr(resources_response, 'resources') and resources_response.resources:
-                    for resource in resources_response.resources:
-                        resource_uri = str(resource.uri)
-                        self.sessions[resource_uri] = session
-                    print(f"  ✓ Found {len(resources_response.resources)} resources")
+            # Only try to list tools if the server supports it
+            try:
+                if hasattr(session, 'list_tools'):
+                    response = await session.list_tools()
+                    if hasattr(response, 'tools'):
+                        for tool in response.tools:
+                            self.sessions[tool.name] = session
+                            self.available_tools.append({
+                                "name": tool.name,
+                                "description": getattr(tool, 'description', ''),
+                                "input_schema": getattr(tool, 'inputSchema', {})
+                            })
+                        print(f"  ✓ Found {len(response.tools)} tools")
+            except Exception as e:
+                print(f"  ⚠️ Could not list tools: {str(e)}")
+            
+            # Only try to list prompts if the server supports it
+            try:
+                if hasattr(session, 'list_prompts'):
+                    prompts_response = await session.list_prompts()
+                    if hasattr(prompts_response, 'prompts') and prompts_response.prompts:
+                        for prompt in prompts_response.prompts:
+                            self.sessions[prompt.name] = session
+                            self.available_prompts.append({
+                                "name": prompt.name,
+                                "description": getattr(prompt, 'description', ''),
+                                "arguments": getattr(prompt, 'arguments', {})
+                            })
+                        print(f"  ✓ Found {len(prompts_response.prompts)} prompts")
+            except Exception as e:
+                print(f"  ⚠️ Could not list prompts: {str(e)}")
+                
+            # Only try to list resources if the server supports it
+            try:
+                if hasattr(session, 'list_resources'):
+                    resources_response = await session.list_resources()
+                    if hasattr(resources_response, 'resources') and resources_response.resources:
+                        for resource in resources_response.resources:
+                            resource_uri = str(resource.uri)
+                            self.sessions[resource_uri] = session
+                        print(f"  ✓ Found {len(resources_response.resources)} resources")
+            except Exception as e:
+                print(f"  ⚠️ Could not list resources: {str(e)}")
+                
+            print(f"  ✓ Successfully connected to {server_name}")
+            return True
+                
         except Exception as e:
-            print(f"  ⚠️ Could not list resources: {str(e)}")
+            print(f"  ✗ Error connecting to {server_name}: {str(e)}")
+            return False
 
     async def connect_to_servers(self):
-        """Connect to all configured MCP servers and discover their capabilities."""
         print("\nInitializing MCP servers...")
-        
         try:
+            print("Loading server configuration...")
             with open('server_config.json') as f:
                 config = json.load(f)
             
             servers = config.get('mcpServers', {})
+            print(f"Found {len(servers)} server(s) in config")
+            
             if not servers:
                 print("No servers found in configuration")
                 return False
                 
-            print(f"Found {len(servers)} server(s) in config")
-            
             for server_name, server_config in servers.items():
-                print(f"\nConnecting to {server_name}...")
+                print(f"\nAttempting to connect to {server_name}...")
                 print(f"Command: {server_config.get('command')} {' '.join(server_config.get('args', []))}")
-                
-                try:
-                    # Set up server connection
-                    server_params = StdioServerParameters(**server_config)
-                    stdio_transport = await self.exit_stack.enter_async_context(
-                        stdio_client(server_params)
-                    )
-                    read, write = stdio_transport
-                    session = await self.exit_stack.enter_async_context(
-                        ClientSession(read, write)
-                    )
-                    await session.initialize()
-                    
-                    # Discover and register server capabilities
-                    await self._discover_server_capabilities(session, server_name)
+                if await self.connect_to_server(server_name, server_config):
                     print(f"  ✓ Successfully connected to {server_name}")
-                    
-                except Exception as e:
-                    print(f"  ✗ Error connecting to {server_name}: {str(e)}")
+                else:
+                    print(f"  ✗ Error connecting to {server_name}")
             
             if not self.available_tools:
                 print("\nWarning: No tools were loaded from any server")
-                return False
+            else:
+                print(f"\nSuccessfully loaded {len(self.available_tools)} tools from all servers")
                 
-            print(f"\nSuccessfully loaded {len(self.available_tools)} tools from all servers")
             return True
             
         except FileNotFoundError:
@@ -127,88 +127,48 @@ class MCP_ChatBot:
             return False
     
     async def process_query(self, query):
-        messages = [{'role': 'user', 'content': query}]
+        messages = [{'role':'user', 'content':query}]
         
         while True:
-            try:
-                # Get response from Claude
-                response = self.anthropic.messages.create(
-                    max_tokens=2024,
-                    model=self.model,
-                    tools=self.available_tools,
-                    messages=messages
-                )
-                
-                assistant_content = []
-                tool_use_found = False
-                
-                # Process each content block in the response
-                for content in response.content:
-                    if content.type == 'text':
-                        print(content.text)
-                        assistant_content.append(content)
-                    elif content.type == 'tool_use':
-                        tool_use_found = True
-                        print(f"\n[Using tool: {content.name}]")
-                        
-                        # Get session and call tool
-                        session = self.sessions.get(content.name)
-                        if not session:
-                            print(f"Error: Tool '{content.name}' not found.")
-                            # Add error response to messages
-                            messages.append({
-                                'role': 'assistant',
-                                'content': [content.model_dump()]
-                            })
-                            messages.append({
-                                'role': 'user',
-                                'content': [{
-                                    'type': 'tool_result',
-                                    'tool_use_id': content.id,
-                                    'is_error': True,
-                                    'content': f"Error: Tool '{content.name}' not found."
-                                }]
-                            })
-                            continue
-                        
-                        try:
-                            # Call the tool
-                            result = await session.call_tool(content.name, arguments=content.input)
-                            
-                            # Add tool use to messages
-                            messages.append({
-                                'role': 'assistant',
-                                'content': [content.model_dump()]
-                            })
-                            
-                            # Add tool result to messages
-                            messages.append({
-                                'role': 'user',
-                                'content': [{
-                                    'type': 'tool_result',
-                                    'tool_use_id': content.id,
-                                    'content': str(result.content) if hasattr(result, 'content') else str(result)
-                                }]
-                            })
-                            
-                        except Exception as e:
-                            print(f"Error calling tool {content.name}: {str(e)}")
-                            messages.append({
-                                'role': 'user',
-                                'content': [{
-                                    'type': 'tool_result',
-                                    'tool_use_id': content.id,
-                                    'is_error': True,
-                                    'content': f"Error: {str(e)}"
-                                }]
-                            })
-                
-                # If no tool was used in this response, we're done
-                if not tool_use_found:
-                    break
+            response = self.anthropic.messages.create(
+                max_tokens = 2024,
+                model = 'claude-3-7-sonnet-20250219', 
+                tools = self.available_tools,
+                messages = messages
+            )
+            
+            assistant_content = []
+            has_tool_use = False
+            
+            for content in response.content:
+                if content.type == 'text':
+                    print(content.text)
+                    assistant_content.append(content)
+                elif content.type == 'tool_use':
+                    has_tool_use = True
+                    assistant_content.append(content)
+                    messages.append({'role':'assistant', 'content':assistant_content})
                     
-            except Exception as e:
-                print(f"Error processing query: {str(e)}")
+                    # Get session and call tool
+                    session = self.sessions.get(content.name)
+                    if not session:
+                        print(f"Tool '{content.name}' not found.")
+                        break
+                        
+                    result = await session.call_tool(content.name, arguments=content.input)
+                    messages.append({
+                        "role": "user", 
+                        "content": [
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": content.id,
+                                "content": result.content
+                            }
+                        ]
+                    })
+            
+            # Exit loop if no tool was used
+            if not has_tool_use:
                 break
 
     async def get_resource(self, resource_uri):
@@ -298,6 +258,7 @@ class MCP_ChatBot:
         # Enable tab completion
         readline.parse_and_bind("tab: complete")
         
+        print("\nMCP Chatbot Started!")
         print("Type your queries or 'quit' to exit.")
         print("Use @folders to see available topics")
         print("Use @<topic> to search papers in that topic")
@@ -305,7 +266,7 @@ class MCP_ChatBot:
         print("Use /prompt <name> <arg1=value1> to execute a prompt")
         print("Use Up/Down arrows to navigate command history")
         print("Press Ctrl+C to cancel input\n")
-
+        
         while True:
             try:
                 # Use readline for better input handling
@@ -380,7 +341,14 @@ async def main():
         if not await chatbot.connect_to_servers():
             print("\nFailed to initialize required servers. Exiting.")
             return
+            
         print("\nMCP ChatBot Started!")
+        print("Type your queries or 'quit' to exit.")
+        print("Use @folders to see available topics")
+        print("Use @<topic> to search papers in that topic")
+        print("Use /prompts to list available prompts")
+        print("Use /prompt <name> <arg1=value1> to execute a prompt\n")
+        
         await chatbot.chat_loop()
     except KeyboardInterrupt:
         print("\nShutting down...")

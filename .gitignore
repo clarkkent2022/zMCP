@@ -18,6 +18,39 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
+
+# Environment variables
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local development
+.DS_Store
+
+# Logs
+*.log
+
+# Local configuration
+local_settings.py
+db.sqlite3
+
+# Virtual environment
+.env/*
+!.env/example
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# MCP specific
+papers/*/
 *.egg
 
 # Virtual Environment

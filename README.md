@@ -31,11 +31,6 @@ A chatbot that interfaces with MCP (Model Context Protocol) servers to provide r
 
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
-   ```
-
-   Or using `uv` (recommended):
-   ```bash
    uv pip install -r requirements.txt
    ```
 
@@ -69,7 +64,6 @@ A chatbot that interfaces with MCP (Model Context Protocol) servers to provide r
 - `mcp_chatbot.py` - Main chatbot application
 - `research_server.py` - MCP server for paper research
 - `server_config.json` - Configuration for MCP servers
-- `main.py` - Simple entry point
 - `papers/` - Directory for storing paper data
 
 ## License
